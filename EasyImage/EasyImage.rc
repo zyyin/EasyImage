@@ -1,0 +1,278 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\EasyImage.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""l.CHS\\afxres.rc""      // 标准组件\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\EasyImage.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_EASYIMAGE_DIALOG DIALOGEX 0, 0, 462, 335
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_ACCEPTFILES | WS_EX_APPWINDOW
+CAPTION "EasyImage"
+MENU IDR_MENU1
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,209,314,50,14,NOT WS_VISIBLE
+    PUSHBUTTON      "取消",IDCANCEL,405,314,50,14,NOT WS_VISIBLE
+    LTEXT           "静态",IDC_IMAGE,7,7,71,57,SS_NOTIFY,WS_EX_ACCEPTFILES
+    LTEXT           "",IDC_RGB,346,21,50,24
+    LTEXT           "",IDC_YUV,405,17,50,24
+    LTEXT           "",IDC_POS,353,63,50,24
+    LTEXT           "",IDC_IMAGEINFO,230,63,50,24
+    LTEXT           "",IDC_SCALEINFO,222,25,50,24
+    LTEXT           "",IDC_BAR1,395,110,47,7,SS_SUNKEN
+    LTEXT           "",IDC_BAR2,396,123,47,7,SS_SUNKEN
+    LTEXT           "",IDC_BAR3,396,139,47,7,SS_SUNKEN
+    LTEXT           "",IDC_BAR4,397,158,47,7,SS_SUNKEN
+    LTEXT           "静态",IDC_THUMBNAIL,23,91,71,57,SS_NOTIFY
+    LTEXT           "静态",IDC_HIST,25,173,87,53
+    EDITTEXT        IDC_EDIT1,337,206,67,46,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
+END
+
+IDD_SLIDERDLG DIALOGEX 0, 0, 278, 87
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,113,66,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,221,66,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTON1,3,65,50,14
+    CONTROL         "",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,7,29,227,15
+    EDITTEXT        IDC_EDIT1,240,28,31,16,ES_AUTOHSCROLL
+END
+
+IDD_YUV DIALOGEX 0, 0, 194, 154
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "YUV"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,39,127,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,107,127,50,14
+    LTEXT           "Format",IDC_STATIC,33,25,26,11
+    LTEXT           "Width:",IDC_STATIC,33,68,26,11
+    LTEXT           "Height:",IDC_STATIC,33,90,26,11
+    EDITTEXT        IDC_WIDTH,94,65,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_HEIGHT,94,89,40,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_YUVTYPE,75,24,81,101,CBS_DROPDOWNLIST | WS_TABSTOP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "EasyImage.exe"
+            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "OriginalFilename", "EasyImage.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_EASYIMAGE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 455
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 328
+    END
+
+    IDD_SLIDERDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 271
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
+    END
+
+    IDD_YUV, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 187
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU 
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "Open",                        ID_OPENFILE
+        MENUITEM "Save",                        ID_SAVEFILE
+        MENUITEM "Reload",                      ID_RELOAD
+    END
+    POPUP "Image"
+    BEGIN
+        MENUITEM "RotateLeft",                  ID_ROTATE90
+        MENUITEM "RotateRight",                 ID_ROTATE270
+        MENUITEM "Any Rotate",                  ID_ANY_ROTATION
+        MENUITEM SEPARATOR
+        MENUITEM "Mirror",                      ID_MIRROR
+        MENUITEM "Flip",                        ID_FLIP
+        MENUITEM SEPARATOR
+        MENUITEM "Scale Down",                  ID_SCALEDOWN
+        MENUITEM "Scale Up",                    ID_SCALEUP
+    END
+    POPUP "Color"
+    BEGIN
+        MENUITEM "Light",                       ID_COLOR_LIGHT
+        MENUITEM "Contrast",                    ID_COLOR_CONTRAST
+        MENUITEM "Saturation",                  ID_COLOR_SATURATION
+        MENUITEM "Hue",                         ID_COLOR_HUE
+        MENUITEM SEPARATOR
+        MENUITEM "Negative",                    ID_COLOR_NEGATIVE
+        MENUITEM "GrayScale",                   ID_COLOR_GRAYSCALE
+        MENUITEM "Threshold(OTSU)",             ID_COLOR_THRESHOLD
+    END
+    POPUP "Filter"
+    BEGIN
+        MENUITEM "OldPicture",                  ID_FILTER_OLDPICTURE
+        MENUITEM "Lomo",                        ID_FILTER_L
+        MENUITEM "SoftGlow",                    ID_FILTER_SOFTGLOW
+        MENUITEM "Emboss",                      ID_FILTER_EMBOSS
+        MENUITEM "Sketch",                      ID_FILTER_SKETCH
+        MENUITEM "CrossShader",                 ID_FILTER_CROSSSHADER
+        MENUITEM "AutoDehaze",                  ID_FILTER_DEHAZE
+    END
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\EasyImage.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "l.CHS\afxres.rc"      // 标准组件
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

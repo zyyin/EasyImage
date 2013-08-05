@@ -1,0 +1,13 @@
+#pragma once
+
+typedef enum {
+	EI_ROTATION = 0,
+	EI_COLOR_LIGHT, 
+	EI_COLOR_CONTRAST, 
+	EI_COLOR_SATURATION,
+	EI_COLOR_HUE,
+	EI_COLOR_THRESHOLD,
+	EI_NUMBER,
+};
+
+
