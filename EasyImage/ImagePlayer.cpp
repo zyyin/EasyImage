@@ -57,7 +57,7 @@ BOOL CImagePlayer::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	ScreenToClient(&pt);
 	const double SCALE_CHANGE = 0.05;
 	if(zDelta > 0)
-		scale += SCALE_CHANGE
+		scale += SCALE_CHANGE;
 	else 
 		scale -= SCALE_CHANGE;
 	if(scale < 1.0)
