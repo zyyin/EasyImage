@@ -44,7 +44,6 @@ bool  CvvImage::Create( int w, int h, int bpp )
    if( (bpp != 8 && bpp != 24 && bpp != 32) ||
       (unsigned)w >=  max_img_size || (unsigned)h >= max_img_size)
    {
-      assert(0); // most probably, it is a programming error
       return false;
    }
    if( Bpp() != bpp || Width() != w || Height() != h )

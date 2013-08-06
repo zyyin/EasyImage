@@ -55,11 +55,11 @@ void CImagePlayer::Clear()
 BOOL CImagePlayer::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	ScreenToClient(&pt);
-
+	const double SCALE_CHANGE = 0.05;
 	if(zDelta > 0)
-		scale += 0.05;
+		scale += SCALE_CHANGE
 	else 
-		scale -= 0.05;
+		scale -= SCALE_CHANGE;
 	if(scale < 1.0)
 		scale = 1.0;
 
@@ -208,10 +208,8 @@ void CImagePlayer::RefreshHist()
 	Mat bgr_planes[3];
 	split( image, bgr_planes );
 
-	/// Establish the number of bins
 	int histSize = 256;
 
-	/// Set the ranges ( for B,G,R) )
 	float range[] = { 0, 256 } ;
 	const float* histRange = { range };
 
@@ -228,12 +226,10 @@ void CImagePlayer::RefreshHist()
 
 	Mat histImage( hist_h, hist_w, CV_8UC3, Scalar(48,48,48) );
 
-	/// Normalize the result to [ 0, histImage.rows ]
 	normalize(b_hist, b_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat() );
 	normalize(g_hist, g_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat() );
 	normalize(r_hist, r_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat() );
-
-	/// Draw for each channel
+	
 	for( int i = 1; i < histSize; i++ )
 	{
 		line( histImage, Point( bin_w*(i-1), hist_h - cvRound(b_hist.at<float>(i-1)) ) ,
