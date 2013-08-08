@@ -144,36 +144,33 @@ void  Dehaze(Mat& src, Mat& dst)
 {
 	CFunctionLog fl(__FUNCTION__);
 	const double DEHAZE_RATIO = 0.7;
-	vector<Mat> m, mm;
-	split(src, m);
-	split(src, mm);
+	int w = src.cols;
+	int h = src.rows;
+
+	uchar* pData  = src.data;
+	uchar* pDst  = dst.data;
 
 	double minArray[3];
 	double minVal;
 
-	for(int i = 0; i < src.cols ; i++)
-	{
-		for(int j = 0; j < src.rows ; j++)
+	for(int i = 0; i < w*h*3; i+=3)
+	{	
+		for(int k = 0; k < 3; k++)
 		{
-			for(int k = 0; k < 3; k++)
-			{
-				minArray[k] = m[k].at<uchar>(j, i);
-			}
-			minVal = min(minArray[0],min(minArray[1], minArray[2] ));
+			minArray[k] = *pData++;
+		}
+		minVal = min(minArray[0],min(minArray[1], minArray[2] ));
 
-			double dval = minVal;
-			dval = 255 - DEHAZE_RATIO*dval;
-			dval/=255.0;
-			if(dval < 0.1) dval = 0.1;
-			for(int k = 0; k < 3; k++)
-			{
-				double ix = m[k].at<uchar>(j, i);
-				mm[k].at<uchar>(j, i)= saturate_cast<uchar>((ix - 255)/dval + 255);
-			}
+		double dval = minVal;
+		dval = 255 - DEHAZE_RATIO*dval;
+		dval/=255.0;
+		if(dval < 0.1) dval = 0.1;
+		for(int k = 0; k < 3; k++)
+		{
+			double ix = *pDst;
+			 *pDst++ = saturate_cast<uchar>((ix - 255)/dval + 255);
 		}
 	}
-	merge(mm, dst);
-	
 }
 
 void  SoftGlow(Mat& img, Mat& dst)
