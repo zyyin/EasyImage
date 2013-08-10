@@ -89,6 +89,7 @@ public:
 public:
 	virtual ~CLabel();
 
+	CString m_text;
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CLabel)

@@ -168,7 +168,7 @@ void  Dehaze(Mat& src, Mat& dst)
 		for(int k = 0; k < 3; k++)
 		{
 			double ix = *pDst;
-			 *pDst++ = saturate_cast<uchar>((ix - 255)/dval + 255);
+			*pDst++ = saturate_cast<uchar>((ix - 255)/dval + 255);
 		}
 	}
 }

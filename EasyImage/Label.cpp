@@ -118,16 +118,17 @@ END_MESSAGE_MAP()
 //////////////////////////////////////////////////////////////////////////
 CLabel::CLabel()
 {
-	m_crText = RGB(232, 190, 159);
-
+	m_crText = RGB(232, 190, 159);
 // 1.1
 	m_hBackBrush = NULL;
+
+
 	m_crHiColor =		0;
 	m_crLoColor	=		0;
 
 	m_bTimer =			FALSE;
 	m_bState =			FALSE;
-	m_bTransparent =	TRUE;
+	m_bTransparent =	FALSE;
 	m_Link =			LinkNone;
 	m_hCursor =			NULL;
 	m_Type =			None;
@@ -137,6 +138,7 @@ CLabel::CLabel()
 	m_bRotation =		FALSE;
 	m_fillmode =		Normal;
 	m_cr3DHiliteColor =	RGB(255,255,255);
+
 	
 	m_hwndBrush = ::CreateSolidBrush(0x303030);
 }
@@ -175,13 +177,8 @@ void CLabel::UpdateSurface()
 {
 	CRect (rc);
 	GetWindowRect(rc);
-	Invalidate(FALSE);
+	RedrawWindow();
 
-	GetParent()->ScreenToClient(rc);
-
-	// Modifyed in 2010.1.9
-	GetParent()->InvalidateRect(rc,FALSE);
-	GetParent()->UpdateWindow();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -206,7 +203,7 @@ void CLabel::ReconstructFont()
 {
 	m_font.DeleteObject();
 	BOOL bCreated = m_font.CreateFontIndirect(&m_lf);
-	
+
 	ASSERT(bCreated);
 }
 
@@ -241,11 +238,10 @@ void CLabel::OnPaint()
 	CPaintDC dc(this); // device context for painting
 
 	DWORD dwFlags = 0;
-	
+
 	CRect rc;
 	GetClientRect(rc);
-	CString strText;
-	GetWindowText(strText);
+	CString strText = m_text;
 	CBitmap bmp;
 
 
@@ -343,8 +339,6 @@ void CLabel::OnPaint()
 
 	// If the text centered make an assumtion that
 	// the will want to center verticly as well
-
-	bool	bMLine = false;
 	if (style & SS_CENTERIMAGE)
 	{
 		dwFlags = DT_CENTER;
@@ -356,13 +350,6 @@ void CLabel::OnPaint()
 
 			// And because DT_VCENTER only works with single lines
 			dwFlags |= DT_SINGLELINE; 
-		}
-		else
-		{
-			bMLine = true;
-			dwFlags |= DT_WORDBREAK;
-			dwFlags |= DT_CALCRECT;
-
 		}
 
 	}
@@ -388,24 +375,7 @@ void CLabel::OnPaint()
 	}
 	else
 	{
-		if(!bMLine)
-			pDCMem->DrawText(strText,rc,dwFlags);
-		else
-		{
-			CRect rect(rc);
-			pDCMem->DrawText(strText,rect,dwFlags);
-			dwFlags ^= DT_WORDBREAK;
-			dwFlags ^= DT_CALCRECT;
-			dwFlags |= DT_CENTER;
-			int nHeight = rect.Height();
-			int nWidth = rect.Width();
-			rect.top = rc.top + ( (rc.Height() - nHeight) / 2);
-			rect.bottom = rect.top + nHeight;
-			rect.left = rc.left + ((rc.Width() - nWidth) /2 );
-			rect.right = rect.left + nWidth;
-
-			pDCMem->DrawText(strText,rect,dwFlags);
-		}
+		pDCMem->DrawText(strText,rc,dwFlags);
 		if (m_bFont3d)
 		{
 			pDCMem->SetTextColor(m_cr3DHiliteColor);
@@ -524,11 +494,6 @@ void CLabel::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			ShellExecute(NULL,_T("open"),m_sLink.IsEmpty() ? strLink : m_sLink,NULL,NULL,SW_SHOWNORMAL);
 		}
-		if (m_Link == MailLink)
-		{
-			strLink = L"mailto:" + strLink;
-			ShellExecute( NULL, NULL,  strLink,  NULL, NULL, SW_SHOWNORMAL );
-		}
 	}
 	else
 	{
@@ -574,7 +539,7 @@ CLabel& CLabel::SetText(const CString& strText)
 {
 	if(IsWindow(this->GetSafeHwnd())) 
 	{
-		SetWindowText(strText);
+		m_text = strText;
 		UpdateSurface();
 	}
 
@@ -780,8 +745,8 @@ CLabel& CLabel::SetFontSize(int nSize)
 	m_lf.lfHeight = lf.lfHeight;
 	m_lf.lfWidth  = lf.lfWidth;
 
-	nSize*=-1;
-	m_lf.lfHeight = nSize;
+//	nSize*=-1;
+//	m_lf.lfHeight = nSize;
 	ReconstructFont();
 	UpdateSurface();
 
