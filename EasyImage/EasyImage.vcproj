@@ -147,6 +147,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/FORCE:MULTIPLE"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"

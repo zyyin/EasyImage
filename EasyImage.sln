@@ -1,20 +1,31 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyImage", "EasyImage\EasyImage.vcproj", "{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyImage", "EasyImage\EasyImage.vcxproj", "{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}.Debug|Win32.Build.0 = Debug|Win32
+		{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}.Debug|x64.ActiveCfg = Debug|x64
+		{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}.Debug|x64.Build.0 = Debug|x64
 		{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}.Release|Win32.ActiveCfg = Release|Win32
 		{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}.Release|Win32.Build.0 = Release|Win32
+		{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}.Release|x64.ActiveCfg = Release|x64
+		{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06176F6B-BA12-433D-8244-A06D5E0F80BB}
 	EndGlobalSection
 EndGlobal

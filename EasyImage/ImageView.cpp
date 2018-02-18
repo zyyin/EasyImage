@@ -57,7 +57,7 @@ void CImageView::OnPaint()
 	CPaintDC dc(this);
 	CRect rc;
 	GetClientRect(rc);
-	CMemDC memdc(GetDC(), rc);
+	YMemDC memdc(GetDC(), rc);
 	image.Show(memdc.m_hDC, rcShow, rcImage);
 }
 

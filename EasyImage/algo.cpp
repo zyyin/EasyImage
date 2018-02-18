@@ -22,7 +22,8 @@ void rotateImage(Mat& img, double degree, int &w, int &h)
 	cv2DRotationMatrix(center, degree, 1.0, &map_matrix);    
 	map[2] += (w - width) / 2;    
 	map[5] += (h - height) / 2;
-	warpAffine(img, img, Mat(&map_matrix), Size(w, h),
+	Mat mMap(2, 3, CV_32F, map);
+	warpAffine(img, img, mMap, Size(w, h),
 		CV_INTER_LINEAR | CV_WARP_FILL_OUTLIERS,BORDER_CONSTANT, Scalar::all(0));
 
 }

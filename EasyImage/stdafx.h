@@ -37,15 +37,12 @@
 #include "opencv2/opencv.hpp"
 #include "opencv/highgui.h"
 #if _DEBUG 
-#pragma comment(lib, "opencv_core245d.lib")
-#pragma comment(lib, "opencv_imgproc245d.lib")
-#pragma comment(lib, "opencv_highgui245d.lib")
-#pragma comment(lib, "opencv_video245d.lib")
+#pragma comment(lib, "opencv_world340d.lib")
 #else
-#pragma comment(lib, "opencv_core245.lib")
-#pragma comment(lib, "opencv_imgproc245.lib")
-#pragma comment(lib, "opencv_highgui245.lib")
-#pragma comment(lib, "opencv_video245.lib")
+#pragma comment(lib, "opencv_world340.lib")
+#pragma comment(lib, "opencv_imgproc340.lib")
+#pragma comment(lib, "opencv_highgui340.lib")
+#pragma comment(lib, "opencv_video340.lib")
 #endif
 using namespace cv;
 using namespace std;

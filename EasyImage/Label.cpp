@@ -118,7 +118,8 @@ END_MESSAGE_MAP()
 //////////////////////////////////////////////////////////////////////////
 CLabel::CLabel()
 {
-	m_crText = RGB(232, 190, 159);
+	m_crText = RGB(232, 190, 159);
+
 // 1.1
 	m_hBackBrush = NULL;
 
@@ -424,7 +425,7 @@ void CLabel::OnPaint()
 // NT ALMOND				26/08/98    1.0     Origin
 //
 //////////////////////////////////////////////////////////////////////////
-void CLabel::OnTimer(UINT nIDEvent) 
+void CLabel::OnTimer(UINT_PTR nIDEvent) 
 {
 
 	m_bState = !m_bState;
