@@ -1,0 +1,4 @@
+2019/03/28  --Yin.Zhiye
+支持打开RAW8 RAW10 RAW16， 加入去马赛克和GAMMA
+支持保存为RAW8
+

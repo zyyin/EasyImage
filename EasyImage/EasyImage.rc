@@ -16,13 +16,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 中文(中华人民共和国) resources
+// 中文(简体，中国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
-#ifdef _WIN32
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 #pragma code_page(936)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -71,6 +69,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\EasyImage.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -128,6 +127,19 @@ BEGIN
     COMBOBOX        IDC_YUVTYPE,75,24,81,101,CBS_DROPDOWNLIST | WS_TABSTOP
 END
 
+IDD_RESIZE DIALOGEX 0, 0, 255, 162
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Resize"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,130,141,50,14
+    PUSHBUTTON      "取消",IDCANCEL,198,141,50,14
+    LTEXT           "Width:",IDC_STATIC,33,34,26,11
+    LTEXT           "Height:",IDC_STATIC,33,55,26,11
+    EDITTEXT        IDC_WIDTH,94,31,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_HEIGHT,94,55,40,14,ES_AUTOHSCROLL
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -135,8 +147,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 2,0,2,0
+ PRODUCTVERSION 2,0,2,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -151,14 +163,14 @@ BEGIN
     BEGIN
         BLOCK "080403a8"
         BEGIN
-            VALUE "CompanyName", "TODO: <公司名>"
-            VALUE "FileDescription", "TODO: <文件说明>"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "CompanyName", "Verisilicon"
+            VALUE "FileDescription", "EasyImage"
+            VALUE "FileVersion", "2.0.2.0"
             VALUE "InternalName", "EasyImage.exe"
-            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "LegalCopyright", "Verisilicon"
             VALUE "OriginalFilename", "EasyImage.exe"
-            VALUE "ProductName", "TODO: <产品名>"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductName", "EasyImage"
+            VALUE "ProductVersion", "2.0.2.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -174,7 +186,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_EASYIMAGE_DIALOG, DIALOG
     BEGIN
@@ -199,6 +211,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 147
     END
+
+    IDD_RESIZE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 248
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 155
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -208,7 +228,7 @@ END
 // Menu
 //
 
-IDR_MENU1 MENU 
+IDR_MENU1 MENU
 BEGIN
     POPUP "File"
     BEGIN
@@ -227,6 +247,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Scale Down",                  ID_SCALEDOWN
         MENUITEM "Scale Up",                    ID_SCALEUP
+        MENUITEM "Resize",                      ID_IMAGE_RESIZE
     END
     POPUP "Color"
     BEGIN
@@ -249,9 +270,27 @@ BEGIN
         MENUITEM "CrossShader",                 ID_FILTER_CROSSSHADER
         MENUITEM "AutoDehaze",                  ID_FILTER_DEHAZE
     END
+    POPUP "Raw"
+    BEGIN
+        MENUITEM "CCM",                         ID_RAW_CCM, CHECKED
+        MENUITEM "Denoise",                     ID_RAW_DENOISE, CHECKED
+        MENUITEM "AutoBright",                  ID_RAW_AUTOBRIGHT
+        MENUITEM "GlobalAWB",                   ID_RAW_GLOBALAWB, CHECKED
+    END
 END
 
-#endif    // 中文(中华人民共和国) resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_RESIZE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

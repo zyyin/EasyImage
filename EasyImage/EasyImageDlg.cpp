@@ -8,6 +8,8 @@
 #include "SliderDlg.h"
 #include "types.h"
 #include "yuvDlg.h"
+#include "EasyResizeDialog.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -82,8 +84,33 @@ BEGIN_MESSAGE_MAP(CEasyImageDlg, CDialog)
 	ON_COMMAND(ID_COLOR_NEGATIVE, &CEasyImageDlg::OnColorNegative)
 	ON_COMMAND(ID_COLOR_GRAYSCALE, &CEasyImageDlg::OnColorGrayScale)
 	ON_COMMAND(ID_COLOR_THRESHOLD, &CEasyImageDlg::OnColorThreshold)
+	ON_COMMAND(ID_IMAGE_RESIZE, &CEasyImageDlg::OnImageResize)
+	ON_STN_CLICKED(IDC_IMAGEINFO, &CEasyImageDlg::OnStnClickedImageinfo)
+	ON_UPDATE_COMMAND_UI(ID_RAW_AUTOBRIGHT, &CEasyImageDlg::OnUpdateRawAutobright)
+	ON_COMMAND(ID_RAW_CCM, &CEasyImageDlg::OnRawCcm)
+	ON_UPDATE_COMMAND_UI(ID_RAW_CCM, &CEasyImageDlg::OnUpdateRawCcm)
+	ON_UPDATE_COMMAND_UI(ID_RAW_DENOISE, &CEasyImageDlg::OnUpdateRawDenoise)
+	ON_UPDATE_COMMAND_UI(ID_RAW_GLOBALAWB, &CEasyImageDlg::OnUpdateRawGlobalawb)
 END_MESSAGE_MAP()
 
+void CEasyImageDlg::UpdataRawConfigUI() {
+	CMenu menu;
+	menu.LoadMenu(IDR_MENU1);
+	SetMenu(&menu);
+	CMenu* popup = menu.GetSubMenu(4);
+	popup->CheckMenuItem(ID_RAW_AUTOBRIGHT, (bRawGlobalBright ? MF_CHECKED : MF_UNCHECKED) | MF_BYCOMMAND);
+	popup->CheckMenuItem(ID_RAW_GLOBALAWB,  (bRawGlobalAWB    ? MF_CHECKED : MF_UNCHECKED) | MF_BYCOMMAND);
+	popup->CheckMenuItem(ID_RAW_CCM,        (bRawCCM          ? MF_CHECKED : MF_UNCHECKED) | MF_BYCOMMAND);
+	popup->CheckMenuItem(ID_RAW_DENOISE,    (bRawDenoise      ? MF_CHECKED : MF_UNCHECKED) | MF_BYCOMMAND);
+}
+
+void CEasyImageDlg::UpdateRawConfig() {
+	FileStorage fs;
+	CString strPath = theApp.GetPath() + L"raw.conf";
+	USES_CONVERSION;
+	fs.open(T2A(strPath), FileStorage::WRITE);
+	fs << "ccm" << bRawCCM << "awb" << bRawGlobalAWB << "denoise" << bRawDenoise << "bright"<< bRawGlobalBright;
+}
 
 // CEasyImageDlg 消息处理程序
 
@@ -106,6 +133,19 @@ BOOL CEasyImageDlg::OnInitDialog()
 	imageInfo.SetBkColor(0x303030);
 	scaleInfo.SetBkColor(0x303030);
 	textRGB.SetTransparent(FALSE);
+
+	FileStorage fs;
+	CString strPath = theApp.GetPath() + L"raw.conf";
+	USES_CONVERSION;
+	if (fs.open(T2A(strPath), FileStorage::READ)) {
+		fs["ccm"] >> bRawCCM;
+		fs["awb"] >> bRawGlobalAWB;
+		fs["denoise"] >> bRawDenoise;
+		fs["bright"] >> bRawGlobalBright;
+	}
+	UpdataRawConfigUI();
+	if (!strFileName.IsEmpty())
+		OnReload();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -148,7 +188,7 @@ void CEasyImageDlg::OnSize(UINT, int w, int h)
 	{
 		Move(&m_player, 0, 0, w, h, 0, 0, 800, 1000);
 		Move(&xyPos, 0, 0, w, h, 840,  130,100, 30);
-		Move(&textRGB, 0, 0, w, h, 840,  170,100, 30);
+		Move(&textRGB, 0, 0, w, h, 840,  170,150, 30);
 		Move(&textYUV, 0, 0, w, h, 840,  210, 100,30);
 		Move(&imageInfo, 0, 0, w, h, 840,  50,100, 30);
 		Move(&scaleInfo, 0, 0, w, h, 840,  90, 100,30);
@@ -190,7 +230,7 @@ void CEasyImageDlg::OnOpenfile()
 		L"Image Files (*.*)", 
 		NULL, 
 		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT |OFN_ALLOWMULTISELECT|OFN_ENABLESIZING,
-		_T("jpg|*.jpg|jpeg|*.jpeg|bmp|*.bmp|png|*.png|j2k|*.j2k|mng|*.mng|tif|*.tif|ras|*.ras|pnm|*.pnm|yuv|*.yuv||"),
+		_T("*|*.*|jpg|*.jpg|jpeg|*.jpeg|bmp|*.bmp|png|*.png|j2k|*.j2k|mng|*.mng|tif|*.tif|ras|*.ras|pnm|*.pnm|yuv|*.yuv|pxm|*.pxm|tiff|*.tiff|dng|*.dng||"),
 		NULL);
 	if(dlg.DoModal() == IDOK)
 	{
@@ -202,17 +242,17 @@ void CEasyImageDlg::OnOpenfile()
 
 void CEasyImageDlg::OnSavefile()
 {
-	CFileDialog dlg(FALSE, 
-		L"Image Files (*.*)", 
-		NULL, 
-		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT |OFN_ALLOWMULTISELECT|OFN_ENABLESIZING,
-		_T("*.*|*.*||"),
-		NULL);
+	CFileDialog dlg(TRUE);
 	if(dlg.DoModal() == IDOK)
 	{
 		strFileName = dlg.GetPathName();
-		CString strExt = strFileName.Mid(strFileName.ReverseFind('.')+1);
-		strExt.MakeLower();
+		int pos = strFileName.ReverseFind('.');
+		if (pos == -1) {
+			AfxMessageBox(L"Please input file ext");
+			return;
+		}
+		CString strExt = strFileName.Mid(pos+1);
+		
 		if(strExt == "yuv")
 		{
 			CYUVDlg dlg;
@@ -221,6 +261,9 @@ void CEasyImageDlg::OnSavefile()
 			{
 				m_player.SaveYUV(dlg.m_type);
 			}
+		}
+		else if (strExt == "pgm") {
+			m_player.SavePGM();
 		}
 		else 
 			m_player.Save(strFileName);
@@ -232,7 +275,8 @@ void CEasyImageDlg::OnReload()
 	CString strExt = strFileName.Mid(strFileName.ReverseFind('.')+1);
 	strExt.MakeLower();
 	if(strExt == L"jpg" || strExt == L"bmp" || strExt == L"png" || strExt == L"j2k" || strExt == L"mng" 
-		|| strExt == L"tif" || strExt == L"ras" || strExt == L"pnm")
+		|| strExt == L"tif" || strExt == L"ras" || strExt == L"ppm"  || strExt == L"pbm" ||
+			strExt == L"tiff" || strExt == L"pnm" || strExt == L"pam")
 			m_player.Load(strFileName);
 	else if(strExt == "yuv")
 	{
@@ -241,8 +285,17 @@ void CEasyImageDlg::OnReload()
 		if(dlg.DoModal() == IDOK)
 		{
 			m_player.LoadYUV(dlg.w, dlg.h, dlg.m_type);
+			PostMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
 		}
 	}
+	else if (strExt == L"pgm") {
+
+		m_player.LoadPGM(strFileName);
+	}
+	else if (strExt == L"dng") {
+		m_player.LoadDNG(strFileName, bRawGlobalAWB, bRawGlobalBright, bRawDenoise, bRawCCM);
+	}
+	
 }
 void CEasyImageDlg::OnRotate90()
 {
@@ -495,6 +548,11 @@ BOOL CEasyImageDlg::PreTranslateMessage(MSG* pMsg)
 			OnReload();
 			return TRUE;	
 		}
+		else if (pMsg->wParam == 'W' && (::GetKeyState(VK_CONTROL) & 0x8000))
+		{
+			OnOK();
+			return TRUE;
+		}
 
 	}
 	if(pMsg->message == WM_MOUSEWHEEL)
@@ -504,7 +562,14 @@ BOOL CEasyImageDlg::PreTranslateMessage(MSG* pMsg)
 		{
 			m_player.OnMouseWheel(LOWORD(pMsg->wParam), HIWORD(pMsg->wParam), pMsg->pt);
 		}
+	} else if (pMsg->message == WM_MOUSEMOVE)
+	{
+
+		
+			m_player.OnMouseMove(pMsg->wParam, pMsg->pt);
+		
 	}
+
 
 	return CDialog::PreTranslateMessage(pMsg);
 }
@@ -518,4 +583,61 @@ void CEasyImageDlg::OnDropFiles(HDROP hDropInfo)
 
 	strFileName = FILE_NAME;
 	OnReload();
+}
+
+void CEasyImageDlg::OnImageResize()
+{
+	if (m_player.image.empty())
+		return;
+	EasyResizeDialog dlg;
+	dlg.mWidth = m_player.w;
+	dlg.mHeight = m_player.h;
+	if (dlg.DoModal() == IDOK) {
+		m_player.Resize(dlg.mWidth, dlg.mHeight);
+	}
+}
+
+
+void CEasyImageDlg::OnStnClickedImageinfo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CEasyImageDlg::OnUpdateRawAutobright(CCmdUI *pCmdUI)
+{
+	bRawGlobalBright = !bRawGlobalBright;
+	UpdataRawConfigUI();
+	UpdateRawConfig();
+}
+
+
+void CEasyImageDlg::OnRawCcm()
+{
+	
+}
+
+
+void CEasyImageDlg::OnUpdateRawCcm(CCmdUI *pCmdUI)
+{
+	bRawCCM = !bRawCCM;
+	UpdataRawConfigUI();
+	UpdateRawConfig();
+
+}
+
+
+void CEasyImageDlg::OnUpdateRawDenoise(CCmdUI *pCmdUI)
+{
+	bRawDenoise = !bRawDenoise;
+	UpdataRawConfigUI();
+	UpdateRawConfig();
+}
+
+
+void CEasyImageDlg::OnUpdateRawGlobalawb(CCmdUI *pCmdUI)
+{
+	bRawGlobalAWB = !bRawGlobalAWB;
+	UpdataRawConfigUI();
+	UpdateRawConfig();
 }

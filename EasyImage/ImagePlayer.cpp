@@ -3,6 +3,9 @@
 #include "ImagePlayer.h"
 #include "algo.h"
 #include "yuv.h"
+#include "xFile.h"
+#include "libraw\libraw.h"
+
 CImagePlayer::CImagePlayer(void)
 {
 	historyInddex = 0;
@@ -54,6 +57,7 @@ void CImagePlayer::Clear()
 }
 BOOL CImagePlayer::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
+	m_cs.Lock();
 	ScreenToClient(&pt);
 	const double SCALE_CHANGE = 0.05;
 	if(zDelta > 0)
@@ -64,6 +68,7 @@ BOOL CImagePlayer::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		scale = 1.0;
 
 	Scale( pt);
+	m_cs.Unlock();
 	return TRUE;
 }
 
@@ -133,6 +138,8 @@ void CImagePlayer::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if(image.empty() || !PtInRect(rcShow, point))
 		return; 
+
+	m_cs.Lock();
 	CPoint endPoint = point;
 	ScreenToImage(point);
 	if(!bDrag)
@@ -141,7 +148,8 @@ void CImagePlayer::OnMouseMove(UINT nFlags, CPoint point)
 		str.Format(L"Coord: %d, %d", point.x, point.y);
 		theApp.pMainDlg->xyPos.SetText(str);
 		Vec3b rgb = image.at<Vec3b>( point.y, point.x);
-		str.Format(L"RGB: %d, %d, %d", rgb[2], rgb[1], rgb[0]);
+		str.Format(L"RGB: %d, %d, %d  GR: %.3f   GB:%.3f", rgb[2], rgb[1], rgb[0],
+				float(rgb[1])/ float(rgb[2]), float(rgb[1]) / float(rgb[0]));
 		theApp.pMainDlg->textRGB.SetText(str);
 
 		Vec3b yuv;
@@ -167,6 +175,7 @@ void CImagePlayer::OnMouseMove(UINT nFlags, CPoint point)
 		startPoint = endPoint;
 		Invalidate(FALSE);
 	}
+	m_cs.Unlock();
 }
 
 void CImagePlayer::RefreshThumb()
@@ -175,10 +184,8 @@ void CImagePlayer::RefreshThumb()
 		return;
 	if(!theApp.pMainDlg)
 		return;
-	if(!theApp.pMainDlg->m_thumb.GetSafeHwnd())
-		return;
 
-	theApp.pMainDlg->m_thumb.image = image.clone();
+	pyrDown(image, theApp.pMainDlg->m_thumb.image);
 	theApp.pMainDlg->m_thumb.Refresh();
 
 }
@@ -198,6 +205,7 @@ void CImagePlayer::	Refresh()
 	CString str;
 	str.Format(L"Size: %d, %d", w, h);
 	theApp.pMainDlg->imageInfo.SetText(str);
+	theApp.pMainDlg->SetWindowText(theApp.pMainDlg->strFileName);;
 	RefreshHist();
 	Invalidate(FALSE);
 }
@@ -336,13 +344,13 @@ void CImagePlayer::Process(int id)
 		dst= Scalar(255, 255, 255) - image;
 		break;
 	case ID_COLOR_GRAYSCALE:
-		cvtColor(image, dst, CV_BGR2GRAY);
-		cvtColor(dst, dst, CV_GRAY2BGR);
+		cvtColor(image, dst, COLOR_BGR2GRAY);
+		cvtColor(dst, dst, COLOR_GRAY2BGR);
 		break;
 	case ID_COLOR_THRESHOLD:
-		cvtColor(image, dst, CV_BGR2GRAY);
-		threshold(dst, dst, 100, 255, CV_THRESH_OTSU | CV_THRESH_BINARY_INV);
-		cvtColor(dst, dst, CV_GRAY2BGR);
+		cvtColor(image, dst, COLOR_BGR2GRAY);
+		threshold(dst, dst, 100, 255, THRESH_OTSU | THRESH_BINARY_INV);
+		cvtColor(dst, dst, COLOR_GRAY2BGR);
 
 
 	}
@@ -367,7 +375,9 @@ void CImagePlayer::OnDropFiles(HDROP hDropInfo)
 
 void CImagePlayer::LoadYUV(int _w, int _h, int type)
 {
+	Clear();
 	int size = GetYUVSize(_w, _h, type);
+	
 	uchar *pYUV = new uchar[size];
 	CFile file;
 	file.Open(theApp.pMainDlg->strFileName, CFile::modeRead);
@@ -379,6 +389,140 @@ void CImagePlayer::LoadYUV(int _w, int _h, int type)
 	Restore();
 	Refresh();
 	RefreshThumb();
+}
+
+class Spliter {
+public:
+	static vector<string> exec(const string &str, const string &pattern);
+	static void exec(const string &str, const string &pattern, vector<int>& ret);
+};
+
+vector<string> Spliter::exec(const string &str, const string &pattern) {
+	vector<string> resultVec;
+	char* tmpStr = strtok((char*)str.c_str(), pattern.c_str());
+
+	while (tmpStr != NULL) {
+		resultVec.push_back(string(tmpStr));
+		tmpStr = strtok(NULL, pattern.c_str());
+	}
+
+	return resultVec;
+};
+
+void Spliter::exec(const string &str, const string &pattern, vector<int>& ret) {
+	vector<string> stringArray = exec(str, pattern);;
+	ret.clear();
+	USES_CONVERSION;
+	for (auto elem : stringArray) {
+		ret.push_back(stoi(elem));
+	}
+}
+
+void CImagePlayer::LoadPGM(LPCTSTR strFileName) {
+#if 1
+	Clear();
+	xFile file;
+	USES_CONVERSION;
+	file.Open(T2A(strFileName), "rb");
+	
+	char* sz = file.ReadString();
+	string str = sz;
+	if (str.find("P5") == -1)
+		return;
+	vector<int> v;
+	Spliter::exec(&str[2], " ", v);
+	if (v.size() == 2) {
+		w = v[0];
+		h = v[1];
+	}
+	else {
+		sz = file.ReadString();
+		str = sz;
+		Spliter::exec(str, " ", v);
+		if (v.size() != 2)
+			return;
+		w = v[0];
+		h = v[1];
+	}
+	
+	LOGE(L" %d %d", w, h);
+	int size = w * h;
+	str.clear();
+	str += file.ReadString();
+	str += file.ReadString();
+	str += file.ReadString();
+	str += file.ReadString();
+	str += file.ReadString();
+
+	int pos = str.find("<Type>");
+	int type = atoi(&str[pos + 6]);
+	pos = str.find("<Layout>");
+	int layout = atoi(&str[pos + 8]);
+
+	sz = file.ReadString();
+	int maxValue = atoi(sz);
+	int shift = (maxValue + 1) / 256;
+	Mat gray(h, w, CV_8UC1);
+
+	if (type == 16) {
+		size = w * h;
+		file.Read(gray.data, size);
+	}
+	else if (type == 17 || type == 18) {
+		size = w * h;
+		uchar* data = new uchar[size*2];
+		file.Read(data, size*2);
+		for (int i = 0; i < size; i++) {
+			gray.data[i] = data[i*2+1] / shift + data[i*2] * (256/shift);
+		}
+		delete data;
+	}
+	
+	LOGE(L"%s %d ", A2T(sz), type);
+	
+	file.Close();
+	if (layout == 20)
+		cvtColor(gray, image, COLOR_BayerBG2BGR);
+	else if (layout == 18)
+		cvtColor(gray, image, COLOR_BayerGR2BGR);
+	else if (layout == 19)
+		cvtColor(gray, image, COLOR_BayerGB2BGR);
+	else if (layout == 17)
+		cvtColor(gray, image, COLOR_BayerBG2BGR);
+
+#else
+	USES_CONVERSION;
+	Clear();
+	image = imread(T2A(strFileName));
+
+#endif
+	Gamma(image, 1.8, 1);
+	Restore();
+	Refresh();
+	RefreshThumb();
+}
+
+void CImagePlayer::SavePGM() {
+	xFile file;
+	USES_CONVERSION;
+	file.Open(T2A(theApp.pMainDlg->strFileName), "wb");
+
+	file.WriteString("P5\n");
+	char szFormat[128];
+	sprintf(szFormat, "%d %d\n", w, h);
+	file.WriteString(szFormat);
+	file.WriteString("#####<DCT Raw>\n");
+	file.WriteString("#<Type>16</Type>\n");
+	file.WriteString("#<Layout>20</Layout>\n");
+	file.WriteString("#<TimeStampUs>1262278316303521</TimeStampUs>\n");
+	file.WriteString("#####</DCT Raw>\n");
+	file.WriteString("255\n");
+	Mat gray(h, w, CV_8UC1);
+	cvtColor(image, gray, COLOR_BGR2GRAY);
+	
+
+		file.Write(gray.data, w*h);
+	file.Close();
 }
 
 void CImagePlayer::SaveYUV(int type)
@@ -398,4 +542,61 @@ void CImagePlayer::SaveYUV(int type)
 	file.Close();
 
 	delete pYUV;
+}
+
+void CImagePlayer::Resize(int _w, int _h) {
+	if (image.empty())
+		return;
+	resize(image, image, Size(_w, _h));
+	w = image.cols;
+	h = image.rows;
+	Restore();
+	Refresh();
+	RefreshThumb();
+}
+
+
+void CImagePlayer::LoadDNG(LPCTSTR strFileName, bool bGlobalAWB, bool bGlobalBright, bool bDenoise, bool bCCM) {
+	Clear();
+	USES_CONVERSION;
+	LibRaw RawProcessor;
+	int ret = 0;
+	RawProcessor.imgdata.params.use_auto_wb = bGlobalAWB;
+	RawProcessor.imgdata.params.use_camera_matrix = bCCM;
+	if (bDenoise) 
+		RawProcessor.imgdata.params.threshold = 4096;
+	RawProcessor.imgdata.params.no_auto_bright = !bGlobalBright;
+
+	if ((ret = RawProcessor.open_file(T2A(strFileName))) != LIBRAW_SUCCESS)
+	{
+		LOGE(L"Cannot open_file %s", strFileName);
+		return;
+	}
+	if ((ret = RawProcessor.unpack()) != LIBRAW_SUCCESS)
+	{
+		LOGE(L"Cannot unpack %s", strFileName);
+		return;
+	}
+	ret = RawProcessor.dcraw_process();
+
+	if (LIBRAW_SUCCESS != ret)
+	{
+		LOGE(L"Cannot do postpocessing on %s", strFileName);
+		if (LIBRAW_FATAL_ERROR(ret))
+			return;;
+	}
+
+	int  colors, bps;
+	RawProcessor.get_mem_image_format(&w, &h, &colors, &bps);
+	LOGE(L"LoadDNG awb:%d  ccm: %d  bright:%d, denoise:%d w:%d h:%d channels:%d bps:%d", bGlobalAWB,
+		bCCM, bGlobalBright,bDenoise,
+		w, h, colors, bps);
+	if (colors != 3)
+		return;
+	image.create(h, w, CV_8UC3);
+	RawProcessor.write_to_bgr_buffer(image.data);
+	Restore();
+	Refresh();
+	RefreshThumb();
+
 }

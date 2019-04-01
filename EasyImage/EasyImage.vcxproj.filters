@@ -48,6 +48,12 @@
     <ClCompile Include="YUVDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="xFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="EasyResizeDialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algo.h">
@@ -90,6 +96,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="YUVDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="xFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyResizeDialog.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

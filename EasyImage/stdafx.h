@@ -33,16 +33,20 @@
 #ifndef _AFX_NO_AFXCMN_SUPPORT
 #include <afxcmn.h>                     // MFC 对 Windows 公共控件的支持
 #endif // _AFX_NO_AFXCMN_SUPPORT
-
+#include <atlimage.h>
 #include "opencv2/opencv.hpp"
-#include "opencv/highgui.h"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+#include <afxcontrolbars.h>
 #if _DEBUG 
-#pragma comment(lib, "opencv_world340d.lib")
+#pragma comment(lib, "opencv_core400d.lib")
 #else
-#pragma comment(lib, "opencv_world340.lib")
-#pragma comment(lib, "opencv_imgproc340.lib")
-#pragma comment(lib, "opencv_highgui340.lib")
-#pragma comment(lib, "opencv_video340.lib")
+//#pragma comment(lib, "ade.lib")
+#pragma comment(lib, "opencv_core400.lib")
+#pragma comment(lib, "opencv_highgui400.lib")
+#pragma comment(lib, "opencv_imgproc400.lib")
+#pragma comment(lib, "opencv_imgcodecs400.lib")
+#pragma comment(lib, "libraw_win32_release.lib")
 #endif
 using namespace cv;
 using namespace std;

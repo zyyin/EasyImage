@@ -1,17 +1,19 @@
 #pragma once
 
-#pragma once
-
 enum {
-	YUV_NV21 = 0,
+	YUV_GRAY = 0,
+	YUV_NV21,
 	YUV_NV12,
 	YUV_I420,
 	YUV_YV12,
 	YUV_YUYV,
 	YUV_UYVY,
+	YUV_422SP,
+	YUV_422I,
 	YUV_444,
 	YUV_NUMBER,
 };
+
 #define ALIGN_DOWN(x, align) ((x) & ~((align)-1))
 
 int GetYUVSize(int w, int h, int type);

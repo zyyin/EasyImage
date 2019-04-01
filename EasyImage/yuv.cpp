@@ -3,7 +3,7 @@
 #include "EasyImage.h"
 int GetYUVSize(int w, int h, int type)
 {
-	int height;
+	int height = h;
 	switch(type)
 	{
 	case YUV_NV12:
@@ -14,6 +14,8 @@ int GetYUVSize(int w, int h, int type)
 		break;
 	case YUV_YUYV:
 	case YUV_UYVY:
+	case YUV_422SP:
+	case YUV_422I:
 		height = h*2;
 		break;
 	case YUV_444:
@@ -58,11 +60,27 @@ void ImageYUV2BGR(Mat& img, PBYTE pYUV, int type)
 	CFunctionLog fl(__FUNCTION__);
 	int w = img.cols;
 	int h = img.rows;
+	
 	w = ALIGN_DOWN(w, 4);
 	h = ALIGN_DOWN(h, 4);
 	Vec3b yuv;
 	switch(type)
 	{
+	case YUV_GRAY:
+		{
+			PBYTE pY = pYUV;
+			for (int y = 0; y < h; y++)
+			{
+				for (int x = 0; x < w; x++)
+				{
+					yuv[0] = *pY++;
+					yuv[1] = 128;
+					yuv[2] = 128;
+					_YUVtoBGR(img.at<Vec3b>(y, x), yuv);
+				}
+			}
+		}
+		break;
 	case YUV_NV21:
 	case YUV_NV12:
 		{
@@ -133,6 +151,44 @@ void ImageYUV2BGR(Mat& img, PBYTE pYUV, int type)
 			}
 		}
 		break;
+	case YUV_422I:
+		{
+			PBYTE pY = pYUV;
+			PBYTE pU = pYUV + w * h;
+			PBYTE pV = pYUV + w * h * 3 / 2;
+			for (int y = 0; y < h; y++)
+			{
+				for (int x = 0; x < w; x++)
+				{
+					yuv[0] = *pY++;
+					if (x % 2 == 0) {
+						yuv[1] = *pU++;
+						yuv[2] = *pV++;
+					}
+					_YUVtoBGR(img.at<Vec3b>(y, x), yuv);
+				}
+			}
+		}
+		break;
+	case YUV_422SP:
+		{
+			PBYTE pY = pYUV;
+			PBYTE pUV = pYUV + w * h;
+			for (int y = 0; y < h; y++)
+			{
+				for (int x = 0; x < w; x++)
+				{
+					yuv[0] = *pY++;
+					if (x % 2 == 0) {
+						yuv[1] = *pUV++;
+						yuv[2] = *pUV++;
+					}
+					_YUVtoBGR(img.at<Vec3b>(y, x), yuv);
+				}
+			}
+		}
+		break;
+
 	case YUV_444:
 		{
 			PBYTE pY = pYUV;
@@ -164,7 +220,27 @@ void ImageBGR2YUV(Mat& img, PBYTE pYUV, int type)
 	Vec3b yuv;
 	switch(type)
 	{
-
+	case YUV_GRAY:
+		{
+			PBYTE pUV = pYUV + w * h;
+			PBYTE pY = pYUV;
+			int vidx = type == YUV_NV12 ? 1 : 2;
+			int uidx = type == YUV_NV12 ? 2 : 1;
+			for (int y = 0; y < h; y++)
+			{
+				for (int x = 0; x < w; x++)
+				{
+					Vec3b c = img.at<Vec3b>(y, x);
+					_BGRtoYUV(c, yuv);
+					*pY++ = yuv[0];
+					if (y % 2 == 0 && x % 2 == 0) {
+						pUV[y / 2 * w + x / 2 * 2] = 128;
+						pUV[y / 2 * w + x / 2 * 2 + 1] = 128;
+					}
+				}
+			}
+		}
+	break;
 	case YUV_NV21:
 	case YUV_NV12:
 		{
@@ -239,6 +315,7 @@ void ImageBGR2YUV(Mat& img, PBYTE pYUV, int type)
 			}
 		}
 		break;
+	
 	case YUV_444:
 		{
 			PBYTE pY = pYUV;

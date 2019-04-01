@@ -25,3 +25,4 @@ void Saturation(Mat& img, int sat);
 
 void Hue(Mat& img, int h);
 
+bool Gamma(Mat& img, float gamma, float gain);

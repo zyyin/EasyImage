@@ -22,7 +22,7 @@
     <ProjectGuid>{D83E21F2-3543-4CE2-A7EC-2EA87BEBDCBB}</ProjectGuid>
     <RootNamespace>EasyImage</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -82,9 +82,15 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>D:\Opencv\opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Opencv\opencv\sources\VS2017\lib\Release;$(LibraryPath)</LibraryPath>
+    <ReferencePath>$(VC_ReferencesPath_x86);D:\Opencv\opencv\sources\VS2017\lib\Release</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>D:\Opencv\opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Opencv\opencv\sources\VS2017\lib\Release;$(LibraryPath)</LibraryPath>
+    <ReferencePath>D:\Opencv\opencv\sources\VS2017\lib\Release;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -201,6 +207,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="algo.cpp" />
+    <ClCompile Include="EasyResizeDialog.cpp" />
     <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="EasyImage.cpp" />
     <ClCompile Include="EasyImageDlg.cpp" />
@@ -214,11 +221,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="xFile.cpp" />
     <ClCompile Include="yuv.cpp" />
     <ClCompile Include="YUVDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algo.h" />
+    <ClInclude Include="EasyResizeDialog.h" />
     <ClInclude Include="CvvImage.h" />
     <ClInclude Include="EasyImage.h" />
     <ClInclude Include="EasyImageDlg.h" />
@@ -230,6 +239,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="types.h" />
+    <ClInclude Include="xFile.h" />
     <ClInclude Include="yuv.h" />
     <ClInclude Include="YUVDlg.h" />
   </ItemGroup>

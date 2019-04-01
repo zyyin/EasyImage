@@ -1,6 +1,9 @@
 Release
 Debug
+*.zip
+*.rar
 *.ncb
 *.dll
 *.opendb
 x64
+*.suo

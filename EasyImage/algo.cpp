@@ -15,16 +15,15 @@ void rotateImage(Mat& img, double degree, int &w, int &h)
 
 	w = ALIGN_UP(w, 4);
 	h = ALIGN_UP(h, 4);
-	float map[6];  
-	CvMat map_matrix = cvMat(2, 3, CV_32F, map);    
+   
 
-	CvPoint2D32f center = cvPoint2D32f(width / 2, height / 2);    
-	cv2DRotationMatrix(center, degree, 1.0, &map_matrix);    
-	map[2] += (w - width) / 2;    
-	map[5] += (h - height) / 2;
-	Mat mMap(2, 3, CV_32F, map);
-	warpAffine(img, img, mMap, Size(w, h),
-		CV_INTER_LINEAR | CV_WARP_FILL_OUTLIERS,BORDER_CONSTANT, Scalar::all(0));
+	Point2f center = Point2f(width / 2, height / 2);
+	Mat map_matrix = getRotationMatrix2D(center, degree, 1.0);
+	//map_matrix.at<float>(0, 2) += (w - width) / 2;
+	//map_matrix.at<float>(1, 3) += (h - height) / 2;
+
+	warpAffine(img, img, map_matrix, Size(w, h),
+		INTER_LINEAR | WARP_FILL_OUTLIERS,BORDER_CONSTANT, Scalar::all(0));
 
 }
 
@@ -125,7 +124,7 @@ void Lomo(Mat& img, Mat& dst)
 void  Sketch(Mat& img, Mat& dst)
 {
 	CFunctionLog fl(__FUNCTION__);
-	cvtColor(img, img, CV_BGR2GRAY);
+	cvtColor(img, img, COLOR_BGR2GRAY);
 	Mat tmp = img.clone();
 	double minVal;
 	double maxVal;
@@ -138,7 +137,7 @@ void  Sketch(Mat& img, Mat& dst)
 			tmp.at<uchar>(y, x) = saturate_cast<uchar>(255 - (maxVal-minVal)*2);;
 		}
 	}
-	cvtColor(tmp, dst, CV_GRAY2BGR);
+	cvtColor(tmp, dst, COLOR_GRAY2BGR);
 }
 bool Gamma(Mat& img, float gamma, float gain)
 {
@@ -253,7 +252,7 @@ void  SoftGlow(Mat& img, Mat& dst)
 void Emboss(Mat& img, Mat& dst)
 {
 	CFunctionLog fl(__FUNCTION__);
-	cvtColor(img, img, CV_BGR2GRAY);
+	cvtColor(img, img, COLOR_BGR2GRAY);
 	Mat tmp = img.clone();
 	for(int x = 2; x < img.cols; x++)
 	{
@@ -263,7 +262,7 @@ void Emboss(Mat& img, Mat& dst)
 			tmp.at<uchar>(y, x) = saturate_cast<uchar>(dif + 100);
 		}
 	}
-	cvtColor(tmp, dst, CV_GRAY2BGR);
+	cvtColor(tmp, dst, COLOR_GRAY2BGR);
 }
 
 void Light(Mat& img, long brightness, long contrast)
@@ -313,7 +312,7 @@ void Saturation(Mat& img, int sat)
 void Hue(Mat& img, int h)
 {
 	CFunctionLog fl(__FUNCTION__);
-	cvtColor(img, img, CV_BGR2HLS);
+	cvtColor(img, img, COLOR_BGR2HLS);
 	for(int x = 0; x < img.cols; x++)
 	{
 		for(int y = 0; y < img.rows; y++)
@@ -323,5 +322,5 @@ void Hue(Mat& img, int h)
 			img.at<Vec3b>(y, x) = c;
 		}
 	}
-	cvtColor(img, img, CV_HLS2BGR);
+	cvtColor(img, img, COLOR_HLS2BGR);
 }

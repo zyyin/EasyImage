@@ -79,7 +79,7 @@ void CThumbnail::Refresh()
 	rotateImage(image, 0, w, h);
 	rcImage = CRect(0, 0, w, h);
 	CalcImageShowRect(rc, rcImage, rcShow);
-	Invalidate(FALSE);
+	Invalidate(TRUE);
 }
 void CHist::Refresh()
 {

@@ -78,4 +78,20 @@ public:
 	afx_msg void OnColorGrayScale();
 	afx_msg void OnColorThreshold();
 	CEdit m_log;
+	afx_msg void OnImageResize();
+	afx_msg void OnStnClickedImageinfo();
+	afx_msg void OnUpdateRawAutobright(CCmdUI *pCmdUI);
+
+protected:
+	void UpdateRawConfig();
+	void UpdataRawConfigUI();
+	bool bRawGlobalAWB;
+	bool bRawGlobalBright;
+	bool bRawCCM;
+	bool bRawDenoise;
+public:
+	afx_msg void OnRawCcm();
+	afx_msg void OnUpdateRawCcm(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateRawDenoise(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateRawGlobalawb(CCmdUI *pCmdUI);
 };
